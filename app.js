@@ -11,10 +11,10 @@ const Swal = require('sweetalert2');
 const app = express();
 
 
-app.use(express.static(__dirname + '/public'));
+app.use(express.static(__dirname + '/Public'));
 
 
-app.use(express.static(__dirname + '/public'));
+
 
 
 const port = process.env.PORT;
@@ -78,7 +78,7 @@ client.on('message', async (message) => {
 
 // Este codigo verifica que ya se envio el mensaje de bienvenida
 if (!registro[message.from]) { 
-  client.sendMessage(message.from, 'Hola soy Marco Polo, tu asistente virtual cheque regalo \n \n Marque el número de la opción que necesita. \n \n 1️⃣ Eres afiliado \n \n 2️⃣ Deseas afiliarte \n \n 3️⃣Activar plan');
+  client.sendMessage(message.from, 'Hola soy CreativoCode');
 
   registro[message.from] = { etapa: 0, numeroDocumento: '' };
   // registro[message.from] = true; // Register the phone number
@@ -238,20 +238,21 @@ switch (registro[message.from].etapa) {
 
   app.post('/upload', upload.single('image'), (req, res) => {
     // Mostrar un mensaje emergente en HTML
-    const successMessage = `
-      <div id="popup" style="position: fixed; top: 50%; left: 50%; transform: translate(-50%, -50%); background-color: #fff; padding: 20px; box-shadow: 0px 0px 10px rgba(0, 0, 0, 0.5); text-align: center;">
-        <p>Imagen cargada con éxito</p>
-        <button onclick="closePopup()">Cerrar</button>
-      </div>
-      <script>
-        function closePopup() {
-          document.getElementById('popup').style.display = 'none';
-          // Redirige de nuevo a la página anterior
-          window.location.href = '/'; // Cambia esto al URL de tu página
-        }
-      </script>
-    `;
-    res.send(successMessage);
+    if (req.file) {
+      Swal.fire({
+        title: "Éxito",
+        text: "La imagen se ha cargado correctamente",
+        icon: "success",
+      });
+      res.redirect('/');
+    } else {
+      Swal.fire({
+        title: "Error",
+        text: "Hubo un problema al cargar la imagen",
+        icon: "error",
+      });
+      res.redirect('/');
+    }
   });
 
 
@@ -289,6 +290,8 @@ switch (registro[message.from].etapa) {
   //  });
   
 
+
+
   app.post('/procesar', (req, res) => {
     const { numbers, messages } = req.body;
 
@@ -304,6 +307,8 @@ switch (registro[message.from].etapa) {
       res.status(400).send('Los datos enviados no son válidos.');
       return;
     }
+
+  
 
 
     const sendMedia = (to, file) => {
@@ -334,7 +339,6 @@ switch (registro[message.from].etapa) {
     
     app.use(express.json());
 
-  // ///////////////////////////////////////////////////////////////
 
 
   numbers.forEach((phoneNumber, index) => {
