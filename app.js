@@ -7,7 +7,7 @@ const fs = require('fs');
 const bodyParser = require('body-parser');
 require('dotenv').config();
 const multer = require('multer'); // Para manejar la carga de archivos
-
+const Swal = require('sweetalert2');
 const app = express();
 
 app.use(express.static(__dirname + '/Public'));
